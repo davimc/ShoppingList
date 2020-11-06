@@ -1,9 +1,6 @@
 package com.davi.ToDoList.domains;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Calendar;
 import java.util.List;
 
@@ -15,6 +12,10 @@ public class Lista {
     private String name;
     private Calendar startDate;
     private Calendar endDate;
+    @OneToMany(
+            mappedBy="lista",
+            cascade= CascadeType.ALL,
+            orphanRemoval = true)
     private List<Item> items;
     private double total;
 
