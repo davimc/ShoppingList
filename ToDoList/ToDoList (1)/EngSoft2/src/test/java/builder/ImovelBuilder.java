@@ -1,7 +1,7 @@
 package builder;
-
 import models.Endereco;
 import models.Imovel;
+import models.TipoEnum;
 
 public class ImovelBuilder {
     private Imovel imovel;
@@ -11,7 +11,8 @@ public class ImovelBuilder {
     public static ImovelBuilder umImovel(){
         ImovelBuilder builder = new ImovelBuilder();
         builder.imovel = new Imovel();
-        builder.imovel.setEndereco(new Endereco("Rua dos Manacas",7,"São Francisco","65076210"));
+        builder.imovel.setTipo(TipoEnum.APARTAMENTO);
+        builder.imovel.setEndereco(new Endereco("Rua dos Prazeres",537,"Centro","65020-460"));
         builder.imovel.setAluguelSugerido(800);
         builder.imovel.setBanheiros(2);
         builder.imovel.setDormitorio(4);
@@ -27,11 +28,18 @@ public class ImovelBuilder {
         return this;
     }
     public ImovelBuilder comEndereco(String rua, int num,String bairro, String cep){
-        this.imovel.setEndereco(new Endereco(rua, num,bairro, cep));
+        this.imovel.setEndereco(new Endereco(rua,num,bairro,cep));
 
         return this;
     }
-
+    public ImovelBuilder comTipo(TipoEnum tipo){
+        imovel.setTipo(tipo);
+        return this;
+    }
+    public ImovelBuilder comAluguelSugerido(double aluguel){
+        this.imovel.setAluguelSugerido(aluguel);
+        return this;
+    }
     public Imovel constroi(){
         return this.imovel;
     }

@@ -1,9 +1,10 @@
 package repository;
 
+import builder.ClienteBuilder;
 import models.Cliente;
 import org.junit.jupiter.api.*;
 import repositories.ClienteRepository;
-import repositories.ClienteRepositoryImpl;
+import repositories.DAO;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -24,7 +25,7 @@ public class ClienteRepositoryTest {
         manager = emf.createEntityManager();
         manager.getTransaction().begin();
 
-        repository = new ClienteRepositoryImpl(manager);
+        repository = new ClienteRepository(manager);
     }
     @AfterEach
     public void depois(){
@@ -36,8 +37,18 @@ public class ClienteRepositoryTest {
     }
 
     @Test
+    public void testaSalvar(){
+        repository.save(new ClienteBuilder().umCliente().constroi());
+    }
+    @Test
     public void testaBuscarTodos(){
         List<Cliente> clientes = repository.findAll();
         System.out.println(clientes.size());
+    }
+    @Test
+    public void testaAcharPorNome(){
+        repository.save(ClienteBuilder.umCliente().constroi());
+        List<Cliente> clientes = repository.findByName("Davi Matos de Carvalho");
+        Assertions.assertEquals("Davi Matos de Carvalho", clientes.get(0).getNome());
     }
 }

@@ -10,8 +10,6 @@ public class Imovel {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private TipoEnum tipo;
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="endereco_id", referencedColumnName = "id")
     private Endereco endereco;
     /*@OneToMany(cascade= CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(name="imovel_locacao", joinColumns = {@JoinColumn(name="imovel_id")},
@@ -25,7 +23,7 @@ public class Imovel {
     private int vagasGaragem;
     @Column(name="aluguel_sugerido")
     private double aluguelSugerido;
-    private String obs;
+    private String obs="";
 
     public Imovel() {
 
@@ -139,5 +137,21 @@ public class Imovel {
 
     public void setObs(String obs) {
         this.obs = obs;
+    }
+
+    @Override
+    public String toString() {
+        return "Imovel{" +
+                "tipo=" + tipo +
+                ", no endereco='" + endereco + '\'' +
+                ", ocupado=" + isAtivo +
+                ", metragem=" + metragem +
+                "m, com: =" + dormitorio +
+                "dormitorio(s), =" + banheiros +
+                "banheiros , =" + suites +
+                "suites, =" + vagasGaragem +
+                "vagasGaragem. aluguelSugerido=" + aluguelSugerido +
+                ", obs='" + obs + '\'' +
+                '}';
     }
 }

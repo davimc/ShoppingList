@@ -1,20 +1,21 @@
 package repository;
 
-import models.Cliente;
+import builder.ImovelBuilder;
 import models.Imovel;
 import org.junit.jupiter.api.*;
 
-import repositories.ImovelRepositoryImpl;
+import repositories.ImovelRepository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import java.util.Arrays;
 import java.util.List;
 
 public class ImovelRepositoryTest {
     private static EntityManagerFactory emf;
     private EntityManager manager;
-    private ImovelRepositoryImpl repository;
+    private ImovelRepository repository;
 
     @BeforeAll
     public static void inicio(){
@@ -26,9 +27,16 @@ public class ImovelRepositoryTest {
         manager = emf.createEntityManager();
         manager.getTransaction().begin();
 
-        repository = new ImovelRepositoryImpl(manager);
+        repository = new ImovelRepository(manager);
+        List<Imovel> imoveis = Arrays.asList(new Imovel[]{ImovelBuilder.umImovel().constroi(),ImovelBuilder.umImovel().comAlocacao().constroi()
+                , ImovelBuilder.umImovel().comEndereco("Rua dos Manacas",7,"São Francisco","65076-210").constroi()
+                , ImovelBuilder.umImovel().comAluguelSugerido(1000.0).constroi()});
+        imoveis.forEach(imovel->{
+            repository.save(imovel);
+        });
     }
     @AfterEach
+
     public void depois(){
         manager.getTransaction().rollback();
     }
@@ -38,8 +46,27 @@ public class ImovelRepositoryTest {
     }
 
     @Test
-    public void testaBuscarTodos(){
-        List<Imovel> imoveis = repository.findByAtivo(true);
-        System.out.println(imoveis.size());
+    public void testaSalvar(){
+        repository.save( ImovelBuilder.umImovel().constroi());
     }
+
+    @Test
+    public void testaBuscarTodos(){
+        List<Imovel> imoveis = repository.findAll();
+        Assertions.assertEquals(3,imoveis.size());
+
+    }
+    @Test
+    public void testaBuscarAtivo(){
+        List<Imovel> imoveis = repository.findByAtivo(true);
+        Assertions.assertFalse(imoveis.isEmpty());
+    }
+    /*@Test
+    public void testaBuscarPorEnderecoEInativos(){
+        List<Imovel> imoveis = repository.findByAtivoPorEndereco(false,"Centro");
+        imoveis.forEach(imovel -> {
+                System.out.println(imovel);
+        });
+    }*/
+
 }
