@@ -7,9 +7,11 @@ import java.util.List;
 @Table(name="imovel")
 public class Imovel {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private TipoEnum tipo;
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name="imovel_id")
     private Endereco endereco;
     /*@OneToMany(cascade= CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(name="imovel_locacao", joinColumns = {@JoinColumn(name="imovel_id")},
@@ -142,15 +144,16 @@ public class Imovel {
     @Override
     public String toString() {
         return "Imovel{" +
-                "tipo=" + tipo +
-                ", no endereco='" + endereco + '\'' +
-                ", ocupado=" + isAtivo +
+                "ID= " + id +
+                " tipo=" + tipo +
+                ", " + endereco.getRua() + " nº "+ endereco.getNumero()+"/"+endereco.getBairro()+"\n" +
+                " ocupado=" + isAtivo +
                 ", metragem=" + metragem +
-                "m, com: =" + dormitorio +
-                "dormitorio(s), =" + banheiros +
-                "banheiros , =" + suites +
-                "suites, =" + vagasGaragem +
-                "vagasGaragem. aluguelSugerido=" + aluguelSugerido +
+                "m, com: " + dormitorio+"\n" +
+                " dormitorio(s), " + banheiros +
+                " banheiro(s) , " + suites +
+                " suites, " + vagasGaragem +
+                " vagas de garagem. \n aluguel sugerido=" + aluguelSugerido +
                 ", obs='" + obs + '\'' +
                 '}';
     }

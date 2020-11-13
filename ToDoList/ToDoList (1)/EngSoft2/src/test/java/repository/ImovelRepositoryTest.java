@@ -28,7 +28,7 @@ public class ImovelRepositoryTest {
         manager.getTransaction().begin();
 
         repository = new ImovelRepository(manager);
-        List<Imovel> imoveis = Arrays.asList(new Imovel[]{ImovelBuilder.umImovel().constroi(),ImovelBuilder.umImovel().comAlocacao().constroi()
+        List<Imovel> imoveis = Arrays.asList(new Imovel[]{ImovelBuilder.umImovel().constroi(),ImovelBuilder.umImovel().comLocacao().constroi()
                 , ImovelBuilder.umImovel().comEndereco("Rua dos Manacas",7,"São Francisco","65076-210").constroi()
                 , ImovelBuilder.umImovel().comAluguelSugerido(1000.0).constroi()});
         imoveis.forEach(imovel->{
@@ -53,7 +53,10 @@ public class ImovelRepositoryTest {
     @Test
     public void testaBuscarTodos(){
         List<Imovel> imoveis = repository.findAll();
-        Assertions.assertEquals(3,imoveis.size());
+        imoveis.forEach(imovel -> {
+            System.out.println(imovel);
+        });
+        Assertions.assertEquals(4,imoveis.size());
 
     }
     @Test

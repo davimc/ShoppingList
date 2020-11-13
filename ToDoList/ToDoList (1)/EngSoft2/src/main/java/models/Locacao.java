@@ -45,6 +45,10 @@ public class Locacao {
         this.obs = obs;
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public Imovel getImovel() {
         return imovel;
     }
@@ -53,11 +57,11 @@ public class Locacao {
         this.imovel = imovel;
     }
 
-    public Cliente getClientes() {
+    public Cliente getCliente() {
         return cliente;
     }
 
-    public void setClientes(Cliente cliente) {
+    public void setCliente(Cliente cliente) {
         this.cliente = cliente;
     }
 
@@ -115,5 +119,13 @@ public class Locacao {
 
     public void setObs(String obs) {
         this.obs = obs;
+    }
+
+    public List<Aluguel> getAlugueis() {
+        return alugueis;
+    }
+
+    public void setAlugueis(List<Aluguel> alugueis) {
+        this.alugueis = alugueis;
     }
 }

@@ -5,6 +5,7 @@ import models.TipoEnum;
 
 import javax.persistence.EntityManager;
 import java.util.List;
+import java.util.Optional;
 
 public class ImovelRepository extends DAO<Imovel> {
     private EntityManager manager;
@@ -13,11 +14,14 @@ public class ImovelRepository extends DAO<Imovel> {
         super("Imovel", manager);
     }
 
+    public Imovel findById(Long id){
+        return (Imovel)getManager().createQuery("from Imovel where id=:id").setParameter("id",id).getSingleResult();
+    }
     public List<Imovel> findByAtivo(boolean ativo) {
         return getManager().createQuery("from Imovel where isAtivo=:ativo").setParameter("ativo",ativo).getResultList();
     }
     public List<Imovel> findByAtivoPorTipo(boolean ativo, TipoEnum tipo){
-        return getManager().createQuery("from Imovel where isAtivo=:ativo and tipo=>tipo").setParameter("ativo",ativo).setParameter("tipo",tipo)
+        return getManager().createQuery("from Imovel where isAtivo=:ativo and tipo>=:tipo").setParameter("ativo",ativo).setParameter("tipo",tipo)
                 .getResultList();
     }
     /*public List<Imovel> findByAtivoPorEndereco(boolean ativo,String endereco){

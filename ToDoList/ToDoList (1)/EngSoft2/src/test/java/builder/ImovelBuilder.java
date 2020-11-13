@@ -23,7 +23,7 @@ public class ImovelBuilder {
 
         return builder;
     }
-    public ImovelBuilder comAlocacao(){
+    public ImovelBuilder comLocacao(){
         this.imovel.setAtivo(true);
         return this;
     }

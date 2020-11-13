@@ -14,10 +14,12 @@ public class ClienteRepository extends DAO<Cliente> {
 
 
     public List<Cliente> findByName(String nome) {
-        System.out.println("algo");
         return getManager().
                 createQuery("from Cliente where nome=:nome").setParameter("nome", nome)
                 .getResultList();
+    }
+    public Cliente findByCpf(String cpf){
+        return (Cliente) getManager().createQuery("from Cliente where cpf=:cpf").setParameter("cpf",cpf).getSingleResult();
     }
 
 
