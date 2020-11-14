@@ -1,5 +1,6 @@
 package repositories;
 
+import models.Endereco;
 import models.Imovel;
 import models.TipoEnum;
 
@@ -23,6 +24,9 @@ public class ImovelRepository extends DAO<Imovel> {
     public List<Imovel> findByAtivoPorTipo(boolean ativo, TipoEnum tipo){
         return getManager().createQuery("from Imovel where isAtivo=:ativo and tipo>=:tipo").setParameter("ativo",ativo).setParameter("tipo",tipo)
                 .getResultList();
+    }
+    public Optional<Imovel> findByEndereco(Long idEndereco){
+        return Optional.of((Imovel) getManager().createQuery("from Imovel where enderecoId=:idEndereco").setParameter("idEndereco",idEndereco).getSingleResult());
     }
     /*public List<Imovel> findByAtivoPorEndereco(boolean ativo,String endereco){
         return getManager().createQuery("from Imovel where isAtivo=:ativo and endereco=:endereco")

@@ -9,7 +9,7 @@ import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AluguelService {
+class AluguelService {
     AluguelRepository repository;
     LocacaoService service;
 

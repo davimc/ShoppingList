@@ -66,9 +66,9 @@ public class Aluguel {
         this.valorPago = valorPago;
     }
 
-    public Aluguel aluguelPendente(){
+    /*public Aluguel aluguelPendente(){
 
-    }
+    }*/
 
     public String getObs() {
         return obs;

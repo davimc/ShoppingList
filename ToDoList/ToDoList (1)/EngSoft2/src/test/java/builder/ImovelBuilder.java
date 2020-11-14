@@ -12,7 +12,7 @@ public class ImovelBuilder {
         ImovelBuilder builder = new ImovelBuilder();
         builder.imovel = new Imovel();
         builder.imovel.setTipo(TipoEnum.APARTAMENTO);
-        builder.imovel.setEndereco(new Endereco("Rua dos Prazeres",537,"Centro","65020-460"));
+        builder.imovel.setEndereco(new Endereco("Rua dos Prazeres","537","Centro","65020-460"));
         builder.imovel.setAluguelSugerido(800);
         builder.imovel.setBanheiros(2);
         builder.imovel.setDormitorio(4);
@@ -27,7 +27,7 @@ public class ImovelBuilder {
         this.imovel.setAtivo(true);
         return this;
     }
-    public ImovelBuilder comEndereco(String rua, int num,String bairro, String cep){
+    public ImovelBuilder comEndereco(String rua, String num,String bairro, String cep){
         this.imovel.setEndereco(new Endereco(rua,num,bairro,cep));
 
         return this;

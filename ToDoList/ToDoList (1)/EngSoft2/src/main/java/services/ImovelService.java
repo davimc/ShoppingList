@@ -3,20 +3,27 @@ package services;
 import models.Endereco;
 import models.Imovel;
 import models.TipoEnum;
+import repositories.EnderecoRepository;
 import repositories.ImovelRepository;
 
 
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
+import java.util.DuplicateFormatFlagsException;
 import java.util.List;
 
-public class ImovelService {
-    ImovelRepository imovelRepository;
+class ImovelService {
+    private ImovelRepository imovelRepository;
+    private EnderecoRepository enderecoRepository;
 
     public ImovelService(EntityManager manager){
         imovelRepository = new ImovelRepository(manager);
+        enderecoRepository = new EnderecoRepository(manager);
     }
     public void criaImovel(TipoEnum tipo, Endereco endereco, double metragem,double aluguelSugerido,int nBanheiro,int nSuite, int nGaragem, int nDormitorio, String obs){
+        if(enderecoRepository.findEndereco(endereco.getRua(),endereco.getNumero(),endereco.getBairro(),endereco.getCep()).isPresent())
+            throw new DuplicateFormatFlagsException("Este endereco já está presente em um imovel");
+        enderecoRepository.save(endereco);
         imovelRepository.save(new Imovel(tipo,endereco,false,metragem,nDormitorio,nBanheiro,nSuite,nGaragem,aluguelSugerido,obs));
     }
     public void alocaImovel(Imovel imovel){
@@ -55,4 +62,8 @@ public class ImovelService {
         return imoveisBairro;
     }
 
+    public Imovel encontraImovel(String rua, String numero, String bairro, String cep) {
+        Endereco endereco = enderecoRepository.findEndereco(rua,numero,bairro,cep).get();
+        return imovelRepository.findByEndereco(endereco.getId()).get();
+    }
 }

@@ -10,14 +10,14 @@ public class Endereco {
     private Long id;
 
     private String rua;
-    private int numero;
+    private String numero;
     private String bairro;
     private String cep;
 
     public Endereco() {
     }
 
-    public Endereco(String rua, int numero, String bairro, String cep) {
+    public Endereco(String rua, String numero, String bairro, String cep) {
 
         this.rua = rua;
         this.numero = numero;
@@ -25,6 +25,9 @@ public class Endereco {
         this.cep = cep;
     }
 
+    public Long getId() {
+        return id;
+    }
 
     public String getRua() {
         return rua;
@@ -34,11 +37,11 @@ public class Endereco {
         this.rua = rua;
     }
 
-    public int getNumero() {
+    public String getNumero() {
         return numero;
     }
 
-    public void setNumero(int numero) {
+    public void setNumero(String numero) {
         this.numero = numero;
     }
 

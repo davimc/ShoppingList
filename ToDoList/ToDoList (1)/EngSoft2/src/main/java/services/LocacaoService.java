@@ -1,25 +1,25 @@
 package services;
 
 import models.*;
-import repositories.AluguelRepository;
 import repositories.ClienteRepository;
 import repositories.ImovelRepository;
 import repositories.LocacaoRepository;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LocacaoService {
+class LocacaoService {
     private ImovelService imovelService;
-    private ClienteService clienteService;
+    private ClienteRepository clienteRepository;
     private AluguelService aluguelService;
     private LocacaoRepository locacaoRepository;
 
     public LocacaoService(EntityManager manager){
         imovelService = new ImovelService(manager);
-        clienteService = new ClienteService(manager);
+        clienteRepository = new ClienteRepository(manager);
         aluguelService = new AluguelService(manager);
         locacaoRepository = new LocacaoRepository(manager);
 
@@ -36,7 +36,7 @@ public class LocacaoService {
         locacao.setPorcentualMulta(multa);
         locacao.setObs(obs);
 
-        clienteService.salva(cliente);
+        clienteRepository.save(cliente);
         imovelService.alocaImovel(imovel);
         locacaoRepository.save(locacao);
 
@@ -57,6 +57,7 @@ public class LocacaoService {
         return locacaoRepository.listByImovel(imovel);
     }
 
+
     private boolean valorAluguelPermitido(Imovel imovel,double valor){
         return imovel.getAluguelSugerido()>=valor;
     }
@@ -70,6 +71,25 @@ public class LocacaoService {
             locacao.setValorAluguel(valor);
         else
             throw new IllegalArgumentException("Valor não pode ser menor que o sugerido");
+
+    }
+    public void pagaAluguel(Locacao locacao, Aluguel aluguel){
+
     }
 
+    public List<Locacao> listaLocacaoDeUmCliente(String cpf) {
+        Cliente cliente = clienteRepository.findByCpf(cpf);
+        return locacaoRepository.listByCliente(cliente);
+    }
+    public Locacao encontraLocacao(String cpf, String rua,String numero, String bairro, String cep) {
+        Cliente cliente = clienteRepository.findByCpf(cpf);
+        Imovel imovel;
+        try{
+             imovel = imovelService.encontraImovel(rua,numero,bairro,cep);
+             return locacaoRepository.findLocacao(cliente, imovel).get();
+        }catch (NoResultException e){
+            e.getMessage();
+            return null;
+        }
+    }
 }

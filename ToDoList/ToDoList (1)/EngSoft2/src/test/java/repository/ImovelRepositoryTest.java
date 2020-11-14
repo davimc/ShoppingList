@@ -29,7 +29,7 @@ public class ImovelRepositoryTest {
 
         repository = new ImovelRepository(manager);
         List<Imovel> imoveis = Arrays.asList(new Imovel[]{ImovelBuilder.umImovel().constroi(),ImovelBuilder.umImovel().comLocacao().constroi()
-                , ImovelBuilder.umImovel().comEndereco("Rua dos Manacas",7,"São Francisco","65076-210").constroi()
+                , ImovelBuilder.umImovel().comEndereco("Rua dos Manacas","7","São Francisco","65076-210").constroi()
                 , ImovelBuilder.umImovel().comAluguelSugerido(1000.0).constroi()});
         imoveis.forEach(imovel->{
             repository.save(imovel);

@@ -36,4 +36,7 @@ public class LocacaoBuilder {
                 new Aluguel(locacao,locacao.getDataInicio().plusMonths(3),locacao.getDataInicio().plusMonths(3),locacao.getValorAluguel(),"")));
         return this;
     }
+    public Locacao constroi(){
+        return locacao;
+    }
 }

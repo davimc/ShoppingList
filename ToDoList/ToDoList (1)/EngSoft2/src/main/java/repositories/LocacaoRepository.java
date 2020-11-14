@@ -7,10 +7,21 @@ import repositories.DAO;
 
 import javax.persistence.EntityManager;
 import java.util.List;
+import java.util.Optional;
 
 public class LocacaoRepository extends DAO<Locacao> {
     public LocacaoRepository(EntityManager manager){
         super("Locacao", manager);
+    }
+
+    public Optional<Locacao> findLocacao(Cliente cliente, Imovel imovel){
+        return Optional.of(
+                (Locacao ) getManager()
+                        .createQuery("from Locacao where cliente_id=:cliente and imovel_id =:imovel")
+                        .setParameter("cliente",cliente.getId())
+                        .setParameter("imovel", imovel.getId())
+                        .getSingleResult()
+        );
     }
 
     public List<Locacao> listByCliente(Cliente cliente){
