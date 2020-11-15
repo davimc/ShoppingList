@@ -1,52 +1,52 @@
 package services;
 
 import models.*;
-import repositories.ClienteRepository;
-import repositories.ImovelRepository;
 import repositories.LocacaoRepository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
+
 class LocacaoService {
-    private ImovelService imovelService;
-    private ClienteRepository clienteRepository;
-    private AluguelService aluguelService;
+    private ClienteService clienteService;
     private LocacaoRepository locacaoRepository;
+
+
+    private AluguelService aluguelService;
+    private ImovelService imovelService;
 
     public LocacaoService(EntityManager manager){
         imovelService = new ImovelService(manager);
-        clienteRepository = new ClienteRepository(manager);
-        aluguelService = new AluguelService(manager);
+        clienteService = new ClienteService(manager);
+        //aluguelService = new AluguelService(manager);
         locacaoRepository = new LocacaoRepository(manager);
 
     }
 
-    public Locacao locarImovel(Cliente cliente, Imovel imovel, double valor,double multa, String obs){
-        this.locacaoValida(cliente,imovel, valor);
-        Locacao locacao = new Locacao();
-        locacao.setCliente(cliente);
-        locacao.setImovel(imovel);
-        locacao.setAtivo(true);
-        locacao.setDataInicio(LocalDate.now());
-        locacao.setDataVencimento(locacao.getDataInicio().plusYears(2));
-        locacao.setPorcentualMulta(multa);
-        locacao.setObs(obs);
-
-        clienteRepository.save(cliente);
-        imovelService.alocaImovel(imovel);
+    public Locacao locarImovel(Locacao locacao){
+        this.locacaoValida(locacao.getCliente(),locacao.getImovel(), locacao.getValorAluguel());
+        locacao.setCliente(clienteService.salva(locacao.getCliente()));
+        locacao.setImovel(imovelService.criaImovel(locacao.getImovel() ));
+        //locacao.adicionaAluguel(aluguelService.geraAluguel(locacao,LocalDate.now().plusMonths(1),"primeiro aluguel"));
+        Cliente cliente = clienteService.encontraPorCpf(locacao.getCliente().getCpf());
+        System.out.println(locacao.getImovel());
+        Imovel imovel = imovelService.encontraImovel(locacao.getImovel().getEndereco());
+        /*System.out.println("Cliente algo "+imovel.getAluguelSugerido());
         locacaoRepository.save(locacao);
-
+        try {
+            locacao = locacaoRepository.findLocacao(locacao.getCliente(), locacao.getImovel()).get();
+        }catch(NoResultException e){
+            e.getMessage();
+        }
+            imovelService.alocaImovel(locacao.getImovel());*/
         return locacao;
     }
     public void finalizaLocacao(Locacao locacao){
         locacao.setAtivo(false);
         locacao.setDataFim(LocalDate.now());
         imovelService.desalocaImovel(locacao.getImovel());
-
 
         locacaoRepository.save(locacao);
     }
@@ -73,23 +73,42 @@ class LocacaoService {
             throw new IllegalArgumentException("Valor não pode ser menor que o sugerido");
 
     }
-    public void pagaAluguel(Locacao locacao, Aluguel aluguel){
-
+    public void adicionaAluguel(Locacao locacao, LocalDate dataVencimento, String obs){
+        Aluguel aluguel = aluguelService.geraAluguel(locacao,dataVencimento,"");
+        locacao.adicionaAluguel(aluguel);
+        locacaoRepository.save(locacao);
     }
+   /* public double pagaAluguel(Locacao locacao, Aluguel aluguel, LocalDate dataPagamento){
+
+    }*/
 
     public List<Locacao> listaLocacaoDeUmCliente(String cpf) {
-        Cliente cliente = clienteRepository.findByCpf(cpf);
+        Cliente cliente = clienteService.encontraPorCpf(cpf);
         return locacaoRepository.listByCliente(cliente);
     }
     public Locacao encontraLocacao(String cpf, String rua,String numero, String bairro, String cep) {
-        Cliente cliente = clienteRepository.findByCpf(cpf);
+        Cliente cliente = clienteService.encontraPorCpf(cpf);
         Imovel imovel;
-        try{
-             imovel = imovelService.encontraImovel(rua,numero,bairro,cep);
-             return locacaoRepository.findLocacao(cliente, imovel).get();
-        }catch (NoResultException e){
-            e.getMessage();
-            return null;
+
+        imovel = imovelService.encontraImovel(new Endereco(rua,numero,bairro,cep));
+        Locacao locacao = locacaoRepository.findLocacao(cliente, imovel);
+        return locacao;
+
+    }
+
+    public Aluguel cadastraPagamento(Locacao locacao, double valor) {
+        Aluguel aluguelPendente = null;
+        if(locacao.getValorAluguel()>=valor)
+            throw new IllegalArgumentException("Valor pago não pode ser menor que o valor do boleto");
+        for (int i =0; i<locacao.getAlugueis().size(); i++) {
+                if(locacao.getAlugueis().get(i).getDataPagamento()==null){
+                    locacao.getAlugueis().get(i).setDataPagamento(LocalDate.now());
+                    locacao.getAlugueis().get(i).setValorPago(valor);
+                    aluguelService.salvaAluguelPagamento(locacao.getAlugueis().get(i));
+                    locacaoRepository.save(locacao);
+                    return locacao.getAlugueis().get(i);
+                }
         }
+        return null;
     }
 }

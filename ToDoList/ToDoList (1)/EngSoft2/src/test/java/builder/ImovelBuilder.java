@@ -41,6 +41,6 @@ public class ImovelBuilder {
         return this;
     }
     public Imovel constroi(){
-        return this.imovel;
+        return imovel;
     }
 }

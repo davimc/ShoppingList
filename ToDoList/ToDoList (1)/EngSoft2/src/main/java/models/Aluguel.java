@@ -4,6 +4,7 @@ package models;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Entity
 @Table(name="aluguel")
@@ -22,11 +23,11 @@ public class Aluguel {
     public Aluguel() {
     }
 
-    public Aluguel(Locacao locacao, LocalDate dataVencimento, LocalDate dataPagamento, double valorPago, String obs) {
+    public Aluguel(Locacao locacao, LocalDate dataVencimento, String obs) {
         this.locacao = locacao;
         this.dataVencimento = dataVencimento;
-        this.dataPagamento = dataPagamento;
-        this.valorPago = valorPago;
+        this.dataPagamento = null;
+        this.valorPago = 0.0;
         this.obs = obs;
     }
 
@@ -76,5 +77,21 @@ public class Aluguel {
 
     public void setObs(String obs) {
         this.obs = obs;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Aluguel aluguel = (Aluguel) o;
+        return Double.compare(aluguel.valorPago, valorPago) == 0 &&
+                locacao.equals(aluguel.locacao) &&
+                dataVencimento.equals(aluguel.dataVencimento) &&
+                Objects.equals(dataPagamento, aluguel.dataPagamento);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(locacao, dataVencimento, dataPagamento, valorPago);
     }
 }

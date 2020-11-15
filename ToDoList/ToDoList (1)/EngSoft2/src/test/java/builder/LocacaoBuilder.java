@@ -1,6 +1,8 @@
 package builder;
 
 import models.Aluguel;
+import models.Cliente;
+import models.Imovel;
 import models.Locacao;
 
 import java.time.LocalDate;
@@ -28,12 +30,20 @@ public class LocacaoBuilder {
 
         return builder;
     }
+    public LocacaoBuilder comCliente(Cliente cliente){
+        locacao.setCliente(cliente);
+        return this;
+    }
+    public LocacaoBuilder comImovel(Imovel imovel){
+        locacao.setImovel(imovel);
+        return this;
+    }
     public LocacaoBuilder com3MesesDeUso(){
         locacao.setDataInicio(LocalDate.now().minusMonths(3));
-        locacao.setAlugueis(Arrays.asList(
+        /*locacao.setAlugueis(Arrays.asList(
                 new Aluguel(locacao,locacao.getDataInicio().plusMonths(1),locacao.getDataInicio().plusMonths(1),locacao.getValorAluguel(),""),
                 new Aluguel(locacao,locacao.getDataInicio().plusMonths(2),locacao.getDataInicio().plusMonths(2),locacao.getValorAluguel(),""),
-                new Aluguel(locacao,locacao.getDataInicio().plusMonths(3),locacao.getDataInicio().plusMonths(3),locacao.getValorAluguel(),"")));
+                new Aluguel(locacao,locacao.getDataInicio().plusMonths(3),locacao.getDataInicio().plusMonths(3),locacao.getValorAluguel(),"")));*/
         return this;
     }
     public Locacao constroi(){

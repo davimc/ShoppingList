@@ -33,15 +33,15 @@ public class Locacao {
     public Locacao() {
     }
 
-    public Locacao(Imovel imovel, Cliente cliente, double valorAluguel, double porcentualMulta, LocalDate dataInicio, LocalDate dataFim, LocalDate dataVencimento, boolean ativo, String obs) {
+    public Locacao(Imovel imovel, Cliente cliente, double valorAluguel, double porcentualMulta, LocalDate dataInicio, LocalDate dataVencimento, String obs) {
         this.imovel = imovel;
         this.cliente = cliente;
         this.valorAluguel = valorAluguel;
         this.porcentualMulta = porcentualMulta;
         this.dataInicio = dataInicio;
-        this.dataFim = dataFim;
+        this.dataFim = null;
         this.dataVencimento = dataVencimento;
-        this.ativo = ativo;
+        this.ativo = true;
         this.obs = obs;
     }
 
@@ -128,4 +128,10 @@ public class Locacao {
     public void setAlugueis(List<Aluguel> alugueis) {
         this.alugueis = alugueis;
     }
+
+    public void adicionaAluguel(Aluguel aluguel){
+        alugueis.add(aluguel);
+    }
+
+
 }

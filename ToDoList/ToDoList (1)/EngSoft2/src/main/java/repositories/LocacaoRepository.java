@@ -14,14 +14,13 @@ public class LocacaoRepository extends DAO<Locacao> {
         super("Locacao", manager);
     }
 
-    public Optional<Locacao> findLocacao(Cliente cliente, Imovel imovel){
-        return Optional.of(
+    public Locacao findLocacao(Cliente cliente, Imovel imovel){
+        return
                 (Locacao ) getManager()
                         .createQuery("from Locacao where cliente_id=:cliente and imovel_id =:imovel")
                         .setParameter("cliente",cliente.getId())
                         .setParameter("imovel", imovel.getId())
-                        .getSingleResult()
-        );
+                        .getSingleResult();
     }
 
     public List<Locacao> listByCliente(Cliente cliente){

@@ -2,9 +2,8 @@ package service;
 
 import builder.ClienteBuilder;
 import builder.ImovelBuilder;
-import models.Aluguel;
-import models.Locacao;
-import models.TipoEnum;
+import builder.LocacaoBuilder;
+import models.*;
 import org.junit.jupiter.api.*;
 import services.MainService;
 
@@ -12,12 +11,13 @@ import services.MainService;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 //LEMBRAR DE MUDAR O PERSISTENCE, PASSWORD ESTÁ SEM NADA
 public class MainServiceTest {
-    private MainService imobiliariaService;
+    private MainService mainService;
     private static EntityManagerFactory emf;
     private EntityManager manager;
 
@@ -31,7 +31,20 @@ public class MainServiceTest {
     public void antes() {
         manager = emf.createEntityManager();
         manager.getTransaction().begin();
-        imobiliariaService = new MainService(manager);
+        mainService = new MainService(manager);
+
+        Imovel[] imoveis ={
+                ImovelBuilder.umImovel().comEndereco("Rua dos prazeres","500","Centro","5020-460").constroi(),
+                ImovelBuilder.umImovel().comEndereco("Rua dos manacas","7","Sao francisco","65076-210").constroi()
+        };
+        Cliente[] clientes = {
+                ClienteBuilder.umCliente().comCpf("65055500022").comNome("Eren Camado").constroi()
+        };
+        Locacao[] locacaoes = {
+            LocacaoBuilder.umaLocacao().constroi(),
+            LocacaoBuilder.umaLocacao().comCliente(clientes[0]).comImovel(imoveis[0]).constroi(),
+            LocacaoBuilder.umaLocacao().comImovel(imoveis[1]).constroi()
+        };
 
     }
 
@@ -48,17 +61,19 @@ public class MainServiceTest {
 
 
     @Test
-    public void deveRecuperarAlugueisDeUmCliente(){
+    public void deveRecuperarAlugueisPagosDeUmCliente(){
         List<Locacao> locacao = new ArrayList<>();
-        locacao.add(imobiliariaService.realizaLocacao(
-                ClienteBuilder.umCliente().constroi(), ImovelBuilder.umImovel().constroi(), 800,0.4,""));
-        locacao.add(imobiliariaService.realizaLocacao(
-                ClienteBuilder.umCliente().constroi(), ImovelBuilder.umImovel().comEndereco("Savassi","4","Cohama","65077210").comTipo(TipoEnum.CASA).constroi(), 800,0.4,""));
-        locacao.add(imobiliariaService.realizaLocacao(
-                ClienteBuilder.umCliente().constroi(), ImovelBuilder.umImovel().comEndereco("Manacas","7","São Francisco","65076210").comTipo(TipoEnum.PREDIO).constroi(), 800,0.4,""));
+        System.out.println(ClienteBuilder.umCliente().constroi().getCpf()+"   "+ ImovelBuilder.umImovel().constroi().getAluguelSugerido());
+        mainService.realizaLocacaoComPrimeiroAluguel(ClienteBuilder.umCliente().constroi(), ImovelBuilder.umImovel().constroi(), 800,0.4,"");
+        /*locacao.add(mainService.realizaLocacaoComPrimeiroAluguel(
+                ClienteBuilder.umCliente().constroi(), ImovelBuilder.umImovel().constroi(), 800,0.4,""));*/
 
-        List<Aluguel> alugeis = imobiliariaService.listaAlugueisPagosCliente("60727289365");
+        /*mainService.pagaAluguel(locacao.get(0),locacao.get(0).getValorAluguel());
+        List<Aluguel> alugueisPagos = mainService.listaAlugueisPagosCliente("60727289365");*/
+        /*System.out.println(alugueisPagos.size()+"Ok");
+        Assertions.assertEquals(locacao.get(0).getAlugueis(),alugueisPagos);*/
 
     }
+
 
 }

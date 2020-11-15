@@ -4,6 +4,7 @@ import models.Cliente;
 
 import javax.persistence.EntityManager;
 import java.util.List;
+import java.util.Optional;
 
 public class ClienteRepository extends DAO<Cliente> {
 

@@ -1,6 +1,7 @@
 package services;
 
 import models.*;
+import repositories.ClienteRepository;
 
 import javax.persistence.EntityManager;
 import java.time.LocalDate;
@@ -8,26 +9,35 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainService {
+
     private LocacaoService locacaoService;
-    private AluguelService aluguelService;
+
 
     public MainService(EntityManager manager){
+
         locacaoService = new LocacaoService(manager);
-        aluguelService = new AluguelService(manager);
+
     }
-    public Locacao realizaLocacao(Cliente cliente,Imovel imovel, double valor, double multa, String obs){
+
+    public Locacao realizaLocacaoComPrimeiroAluguel(Cliente cliente,Imovel imovel, double valor, double multa, String obs){
         if(multa>1.0)
             throw new IllegalArgumentException("Multa acima de 100%");
-        return locacaoService.locarImovel(cliente,imovel,valor,multa,obs);
+        Locacao locacao = new Locacao(imovel,cliente,valor,multa,LocalDate.now(),LocalDate.now().plusYears(2),obs);
+        return locacaoService.locarImovel(locacao);
     }
-    public void cobraAluguel(String cpf, Endereco endereco, LocalDate data){
-        //Locacao locacao = locacaoService.encontraLocacao(cpf,endereco);
+    public void cadastraAluguel(Locacao locacao, LocalDate dataVencimento,String obs){
+        locacaoService.adicionaAluguel(locacao,dataVencimento,obs);
+    }
+    public void pagaAluguel(Locacao locacao, double valor){
+        locacaoService.cadastraPagamento(locacao,valor);
     }
     public List<Aluguel> listaAlugueisPagosCliente(String cpf) {
 
         List<Aluguel> alugueisCliente = new ArrayList<>();
         List<Locacao> locacoesCliente = locacaoService.listaLocacaoDeUmCliente(cpf);
+        System.out.println("okok");
         locacoesCliente.forEach(locacao-> {
+        System.out.println("okok");
             locacao.getAlugueis().forEach(aluguel -> {
                 if (aluguel.getDataPagamento() != null)
                     alugueisCliente.add(aluguel);
